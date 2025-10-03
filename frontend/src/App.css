@@ -1,0 +1,123 @@
+:root {
+  --bg1:#f0f7ff;
+  --bg2:#dfefff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --brand:#2563eb;
+  --light:#f3f4f6;
+  --shadow:0 4px 10px rgba(0,0,0,.06);
+}
+
+body {
+  margin:0;
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+}
+
+.header { padding:32px 16px; text-align:center; }
+.header h1 { margin:0; font-size:36px; }
+
+.container { max-width:1000px; margin:0 auto; padding:0 16px 48px; }
+
+.section-title { margin:16px 0 12px; font-size:20px; }
+.muted { color:var(--muted); }
+
+.row { display:flex; align-items:center; }
+.gap { gap:.75rem; }   
+.wrap { flex-wrap:wrap; gap:.75rem; } 
+
+input {
+  padding:.5rem .7rem;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#fff;
+  color: var(--ink); 
+}
+
+.btn {
+  padding:.5rem .9rem;
+  border:none;
+  border-radius:8px;
+  background:var(--brand);
+  color:#fff;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  margin: 0 .25rem; 
+}
+
+.cards {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+}
+
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  box-shadow:var(--shadow);
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px; 
+  margin-bottom: 8px;
+}
+
+.search-row { margin-top: 20px; }
+
+.username {
+  font-size:16px;
+  font-weight:600;
+  margin:0;
+}
+
+.date {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0;
+}
+
+.text { margin:6px 0 10px; }
+
+.small-btn {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.card-body {
+  min-height: 40px; 
+  margin: 10px 0;
+}
+
+.edit-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.edit-form input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.edit-form .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}

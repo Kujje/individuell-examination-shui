@@ -1,0 +1,74 @@
+org: kujje
+service: individuell-examination-shui
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-north-1
+  environment:
+    TABLE_NAME: messages
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:Scan
+      Resource:
+        - arn:aws:dynamodb:eu-north-1:621302123901:table/messages
+  httpApi:
+    cors:
+      allowedOrigins:
+        - "http://localhost:5173"
+        - "http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com"
+      allowedHeaders:
+        - Content-Type
+      allowedMethods:
+        - OPTIONS
+        - GET
+        - POST
+        - PUT
+
+functions:
+  createMessage:
+    handler: handler.createMessage
+    events:
+      - httpApi:
+          path: /messages
+          method: post
+
+  getMessages:
+    handler: handler.getMessages
+    events:
+      - httpApi:
+          path: /messages
+          method: get
+
+  updateMessage:
+    handler: handler.updateMessage
+    events:
+      - httpApi:
+          path: /messages/{id}
+          method: put
+
+  getMessagesByUser:
+    handler: handler.getMessagesByUser
+    events:
+      - httpApi:
+          path: /messages/{username}
+          method: get
+
+resources:
+  Resources:
+    MessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: messages
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+

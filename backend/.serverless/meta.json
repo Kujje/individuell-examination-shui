@@ -1,0 +1,2372 @@
+{
+  "C:\\Users\\Robin\\OneDrive\\Skrivbord\\Skola\\Frontend\\Utveckling och driftsättning i molnmiljöer\\individuell-examination-shui\\backend\\serverless.yml": {
+    "versionFramework": "4.20.2",
+    "servicePath": "C:\\Users\\Robin\\OneDrive\\Skrivbord\\Skola\\Frontend\\Utveckling och driftsättning i molnmiljöer\\individuell-examination-shui\\backend\\serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "org": "kujje",
+      "service": "individuell-examination-shui",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs18.x",
+        "region": "eu-north-1",
+        "environment": {
+          "TABLE_NAME": "messages"
+        },
+        "iamRoleStatements": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:PutItem",
+              "dynamodb:GetItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:Scan"
+            ],
+            "Resource": "arn:aws:dynamodb:eu-north-1:621302123901:table/messages"
+          }
+        ],
+        "httpApi": {
+          "cors": {
+            "allowedOrigins": [
+              "http://localhost:5173",
+              "http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com"
+            ],
+            "allowedHeaders": [
+              "Content-Type"
+            ],
+            "allowedMethods": [
+              "OPTIONS",
+              "GET",
+              "POST",
+              "PUT"
+            ]
+          }
+        },
+        "stage": "dev",
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "CreateMessageLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-createMessage"
+              }
+            },
+            "GetMessagesLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-getMessages"
+              }
+            },
+            "UpdateMessageLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-updateMessage"
+              }
+            },
+            "GetMessagesByUserLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-getMessagesByUser"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "individuell-examination-shui",
+                          "dev",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/individuell-examination-shui-dev*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/individuell-examination-shui-dev*:*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "dynamodb:PutItem",
+                            "dynamodb:GetItem",
+                            "dynamodb:UpdateItem",
+                            "dynamodb:Scan"
+                          ],
+                          "Resource": "arn:aws:dynamodb:eu-north-1:621302123901:table/messages"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "individuell-examination-shui",
+                      "dev",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            },
+            "CreateMessageLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                  "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+                },
+                "Handler": "handler.createMessage",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "individuell-examination-shui-dev-createMessage",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "TABLE_NAME": "messages"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "CreateMessageLogGroup"
+              ]
+            },
+            "GetMessagesLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                  "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+                },
+                "Handler": "handler.getMessages",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "individuell-examination-shui-dev-getMessages",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "TABLE_NAME": "messages"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "GetMessagesLogGroup"
+              ]
+            },
+            "UpdateMessageLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                  "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+                },
+                "Handler": "handler.updateMessage",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "individuell-examination-shui-dev-updateMessage",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "TABLE_NAME": "messages"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "UpdateMessageLogGroup"
+              ]
+            },
+            "GetMessagesByUserLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                  "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+                },
+                "Handler": "handler.getMessagesByUser",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "individuell-examination-shui-dev-getMessagesByUser",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "TABLE_NAME": "messages"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "GetMessagesByUserLogGroup"
+              ]
+            },
+            "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "CreateMessageLambdaFunction"
+                },
+                "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+              }
+            },
+            "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "GetMessagesLambdaFunction"
+                },
+                "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+              }
+            },
+            "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "UpdateMessageLambdaFunction"
+                },
+                "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+              }
+            },
+            "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "GetMessagesByUserLambdaFunction"
+                },
+                "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+              }
+            },
+            "HttpApi": {
+              "Type": "AWS::ApiGatewayV2::Api",
+              "Properties": {
+                "Name": "dev-individuell-examination-shui",
+                "ProtocolType": "HTTP",
+                "CorsConfiguration": {
+                  "AllowCredentials": "<REDACTED>",
+                  "AllowHeaders": [
+                    "Content-Type"
+                  ],
+                  "AllowMethods": [
+                    "OPTIONS",
+                    "GET",
+                    "POST",
+                    "PUT"
+                  ],
+                  "AllowOrigins": [
+                    "http://localhost:5173",
+                    "http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            "HttpApiStage": {
+              "Type": "AWS::ApiGatewayV2::Stage",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "StageName": "$default",
+                "AutoDeploy": true,
+                "DefaultRouteSettings": {
+                  "DetailedMetricsEnabled": false
+                }
+              }
+            },
+            "CreateMessageLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "CreateMessageLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationCreateMessage": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "CreateMessageLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostMessages": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /messages",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationCreateMessage"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationCreateMessage"
+            },
+            "GetMessagesLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "GetMessagesLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationGetMessages": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "GetMessagesLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRouteGetMessages": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "GET /messages",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationGetMessages"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationGetMessages"
+            },
+            "UpdateMessageLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "UpdateMessageLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationUpdateMessage": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "UpdateMessageLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePutMessagesIdVar": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "PUT /messages/{id}",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationUpdateMessage"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationUpdateMessage"
+            },
+            "GetMessagesByUserLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "GetMessagesByUserLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationGetMessagesByUser": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "GetMessagesByUserLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRouteGetMessagesUsernameVar": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "GET /messages/{username}",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationGetMessagesByUser"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationGetMessagesByUser"
+            },
+            "MessagesTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "messages",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "id",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "id",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-ServerlessDeploymentBucketName"
+              }
+            },
+            "CreateMessageLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So"
+              },
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-CreateMessageLambdaFunctionQualifiedArn"
+              }
+            },
+            "GetMessagesLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc"
+              },
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-GetMessagesLambdaFunctionQualifiedArn"
+              }
+            },
+            "UpdateMessageLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M"
+              },
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-UpdateMessageLambdaFunctionQualifiedArn"
+              }
+            },
+            "GetMessagesByUserLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I"
+              },
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-GetMessagesByUserLambdaFunctionQualifiedArn"
+              }
+            },
+            "HttpApiId": {
+              "Description": "Id of the HTTP API",
+              "Value": {
+                "Ref": "HttpApi"
+              },
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-HttpApiId"
+              }
+            },
+            "HttpApiUrl": {
+              "Description": "URL of the HTTP API",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-individuell-examination-shui-dev-HttpApiUrl"
+              }
+            }
+          }
+        },
+        "vpc": {}
+      },
+      "functions": {
+        "createMessage": {
+          "handler": "handler.createMessage",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/messages",
+                "method": "post"
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/messages"
+            }
+          ],
+          "name": "individuell-examination-shui-dev-createMessage",
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So"
+        },
+        "getMessages": {
+          "handler": "handler.getMessages",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/messages",
+                "method": "get"
+              },
+              "resolvedMethod": "GET",
+              "resolvedPath": "/messages"
+            }
+          ],
+          "name": "individuell-examination-shui-dev-getMessages",
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc"
+        },
+        "updateMessage": {
+          "handler": "handler.updateMessage",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/messages/{id}",
+                "method": "put"
+              },
+              "resolvedMethod": "PUT",
+              "resolvedPath": "/messages/{id}"
+            }
+          ],
+          "name": "individuell-examination-shui-dev-updateMessage",
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M"
+        },
+        "getMessagesByUser": {
+          "handler": "handler.getMessagesByUser",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/messages/{username}",
+                "method": "get"
+              },
+              "resolvedMethod": "GET",
+              "resolvedPath": "/messages/{username}"
+            }
+          ],
+          "name": "individuell-examination-shui-dev-getMessagesByUser",
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "MessagesTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "messages",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "id",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "id",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {}
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs18.x",
+      "region": "eu-north-1",
+      "environment": {
+        "TABLE_NAME": "messages"
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:PutItem",
+            "dynamodb:GetItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:Scan"
+          ],
+          "Resource": "arn:aws:dynamodb:eu-north-1:621302123901:table/messages"
+        }
+      ],
+      "httpApi": {
+        "cors": {
+          "allowedOrigins": [
+            "http://localhost:5173",
+            "http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com"
+          ],
+          "allowedHeaders": [
+            "Content-Type"
+          ],
+          "allowedMethods": [
+            "OPTIONS",
+            "GET",
+            "POST",
+            "PUT"
+          ]
+        }
+      },
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "CreateMessageLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-createMessage"
+            }
+          },
+          "GetMessagesLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-getMessages"
+            }
+          },
+          "UpdateMessageLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-updateMessage"
+            }
+          },
+          "GetMessagesByUserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-getMessagesByUser"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "individuell-examination-shui",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/individuell-examination-shui-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/individuell-examination-shui-dev*:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:PutItem",
+                          "dynamodb:GetItem",
+                          "dynamodb:UpdateItem",
+                          "dynamodb:Scan"
+                        ],
+                        "Resource": "arn:aws:dynamodb:eu-north-1:621302123901:table/messages"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "individuell-examination-shui",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "CreateMessageLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+              },
+              "Handler": "handler.createMessage",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "individuell-examination-shui-dev-createMessage",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "TABLE_NAME": "messages"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateMessageLogGroup"
+            ]
+          },
+          "GetMessagesLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+              },
+              "Handler": "handler.getMessages",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "individuell-examination-shui-dev-getMessages",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "TABLE_NAME": "messages"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetMessagesLogGroup"
+            ]
+          },
+          "UpdateMessageLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+              },
+              "Handler": "handler.updateMessage",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "individuell-examination-shui-dev-updateMessage",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "TABLE_NAME": "messages"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateMessageLogGroup"
+            ]
+          },
+          "GetMessagesByUserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+                "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+              },
+              "Handler": "handler.getMessagesByUser",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "individuell-examination-shui-dev-getMessagesByUser",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "TABLE_NAME": "messages"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetMessagesByUserLogGroup"
+            ]
+          },
+          "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateMessageLambdaFunction"
+              },
+              "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+            }
+          },
+          "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetMessagesLambdaFunction"
+              },
+              "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+            }
+          },
+          "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateMessageLambdaFunction"
+              },
+              "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+            }
+          },
+          "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetMessagesByUserLambdaFunction"
+              },
+              "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-individuell-examination-shui",
+              "ProtocolType": "HTTP",
+              "CorsConfiguration": {
+                "AllowCredentials": "<REDACTED>",
+                "AllowHeaders": [
+                  "Content-Type"
+                ],
+                "AllowMethods": [
+                  "OPTIONS",
+                  "GET",
+                  "POST",
+                  "PUT"
+                ],
+                "AllowOrigins": [
+                  "http://localhost:5173",
+                  "http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com"
+                ]
+              }
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": false
+              }
+            }
+          },
+          "CreateMessageLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateMessageLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateMessage": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "CreateMessageLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostMessages": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /messages",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateMessage"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateMessage"
+          },
+          "GetMessagesLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetMessagesLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetMessages": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "GetMessagesLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetMessages": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /messages",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetMessages"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetMessages"
+          },
+          "UpdateMessageLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateMessageLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationUpdateMessage": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "UpdateMessageLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePutMessagesIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "PUT /messages/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationUpdateMessage"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationUpdateMessage"
+          },
+          "GetMessagesByUserLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetMessagesByUserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetMessagesByUser": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "GetMessagesByUserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetMessagesUsernameVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /messages/{username}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetMessagesByUser"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetMessagesByUser"
+          },
+          "MessagesTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "messages",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "id",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "id",
+                  "KeyType": "HASH"
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "CreateMessageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So"
+            },
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-CreateMessageLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetMessagesLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc"
+            },
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-GetMessagesLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateMessageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M"
+            },
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-UpdateMessageLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetMessagesByUserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I"
+            },
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-GetMessagesByUserLambdaFunctionQualifiedArn"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-individuell-examination-shui-dev-HttpApiUrl"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "org: kujje\r\nservice: individuell-examination-shui\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs18.x\r\n  region: eu-north-1\r\n  environment:\r\n    TABLE_NAME: messages\r\n  iamRoleStatements:\r\n    - Effect: Allow\r\n      Action:\r\n        - dynamodb:PutItem\r\n        - dynamodb:GetItem\r\n        - dynamodb:UpdateItem\r\n        - dynamodb:Scan\r\n      Resource:\r\n        - arn:aws:dynamodb:eu-north-1:621302123901:table/messages\r\n  httpApi:\r\n    cors:\r\n      allowedOrigins:\r\n        - \"http://localhost:5173\"\r\n        - \"http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com\"\r\n      allowedHeaders:\r\n        - Content-Type\r\n      allowedMethods:\r\n        - OPTIONS\r\n        - GET\r\n        - POST\r\n        - PUT\r\n\r\nfunctions:\r\n  createMessage:\r\n    handler: handler.createMessage\r\n    events:\r\n      - httpApi:\r\n          path: /messages\r\n          method: post\r\n\r\n  getMessages:\r\n    handler: handler.getMessages\r\n    events:\r\n      - httpApi:\r\n          path: /messages\r\n          method: get\r\n\r\n  updateMessage:\r\n    handler: handler.updateMessage\r\n    events:\r\n      - httpApi:\r\n          path: /messages/{id}\r\n          method: put\r\n\r\n  getMessagesByUser:\r\n    handler: handler.getMessagesByUser\r\n    events:\r\n      - httpApi:\r\n          path: /messages/{username}\r\n          method: get\r\n\r\nresources:\r\n  Resources:\r\n    MessagesTable:\r\n      Type: AWS::DynamoDB::Table\r\n      Properties:\r\n        TableName: messages\r\n        AttributeDefinitions:\r\n          - AttributeName: id\r\n            AttributeType: S\r\n        KeySchema:\r\n          - AttributeName: id\r\n            KeyType: HASH\r\n        BillingMode: PAY_PER_REQUEST\r\n\r\n",
+    "command": [
+      "deploy"
+    ],
+    "options": {},
+    "orgId": "8b60bd18-6bb8-4b60-8ec8-a5b5d4aaf25b",
+    "orgName": "kujje",
+    "userId": "fh7M7LDM3zs3qm0lz3",
+    "userName": "kujje",
+    "serviceProviderAwsAccountId": "621302123901",
+    "serviceProviderAwsCfStackName": "individuell-examination-shui-dev",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:eu-north-1:621302123901:stack/individuell-examination-shui-dev/d9aa6e30-9dfc-11f0-b347-06ed40383891",
+    "serviceProviderAwsCfStackCreated": "2025-09-30T12:56:15.840Z",
+    "serviceProviderAwsCfStackUpdated": "2025-10-03T13:56:23.275Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "UpdateMessageLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:eu-north-1:621302123901:function:individuell-examination-shui-dev-updateMessage:15",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-individuell-examination-shui-dev-UpdateMessageLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "GetMessagesByUserLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:eu-north-1:621302123901:function:individuell-examination-shui-dev-getMessagesByUser:9",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-individuell-examination-shui-dev-GetMessagesByUserLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "GetMessagesLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:eu-north-1:621302123901:function:individuell-examination-shui-dev-getMessages:15",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-individuell-examination-shui-dev-GetMessagesLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "HttpApiId",
+        "OutputValue": "n1qta2cgal",
+        "Description": "Id of the HTTP API",
+        "ExportName": "sls-individuell-examination-shui-dev-HttpApiId"
+      },
+      {
+        "OutputKey": "CreateMessageLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:eu-north-1:621302123901:function:individuell-examination-shui-dev-createMessage:15",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-individuell-examination-shui-dev-CreateMessageLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+        "ExportName": "sls-individuell-examination-shui-dev-ServerlessDeploymentBucketName"
+      },
+      {
+        "OutputKey": "HttpApiUrl",
+        "OutputValue": "https://n1qta2cgal.execute-api.eu-north-1.amazonaws.com",
+        "Description": "URL of the HTTP API",
+        "ExportName": "sls-individuell-examination-shui-dev-HttpApiUrl"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "CreateMessageLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-createMessage"
+          }
+        },
+        "GetMessagesLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-getMessages"
+          }
+        },
+        "UpdateMessageLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-updateMessage"
+          }
+        },
+        "GetMessagesByUserLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/individuell-examination-shui-dev-getMessagesByUser"
+          }
+        },
+        "IamRoleLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "individuell-examination-shui",
+                      "dev",
+                      "lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/individuell-examination-shui-dev*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/individuell-examination-shui-dev*:*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "dynamodb:PutItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:Scan"
+                      ],
+                      "Resource": "arn:aws:dynamodb:eu-north-1:621302123901:table/messages"
+                    }
+                  ]
+                }
+              }
+            ],
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "individuell-examination-shui",
+                  "dev",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "lambdaRole"
+                ]
+              ]
+            }
+          }
+        },
+        "CreateMessageLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+              "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+            },
+            "Handler": "handler.createMessage",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "individuell-examination-shui-dev-createMessage",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "TABLE_NAME": "messages"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "CreateMessageLogGroup"
+          ]
+        },
+        "GetMessagesLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+              "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+            },
+            "Handler": "handler.getMessages",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "individuell-examination-shui-dev-getMessages",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "TABLE_NAME": "messages"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "GetMessagesLogGroup"
+          ]
+        },
+        "UpdateMessageLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+              "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+            },
+            "Handler": "handler.updateMessage",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "individuell-examination-shui-dev-updateMessage",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "TABLE_NAME": "messages"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "UpdateMessageLogGroup"
+          ]
+        },
+        "GetMessagesByUserLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+              "S3Key": "serverless/individuell-examination-shui/dev/1759502770263-2025-10-03T14:46:10.263Z/individuell-examination-shui.zip"
+            },
+            "Handler": "handler.getMessagesByUser",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "individuell-examination-shui-dev-getMessagesByUser",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "TABLE_NAME": "messages"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "GetMessagesByUserLogGroup"
+          ]
+        },
+        "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "CreateMessageLambdaFunction"
+            },
+            "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+          }
+        },
+        "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "GetMessagesLambdaFunction"
+            },
+            "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+          }
+        },
+        "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "UpdateMessageLambdaFunction"
+            },
+            "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+          }
+        },
+        "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "GetMessagesByUserLambdaFunction"
+            },
+            "CodeSha256": "O6iahpIlyY+itTBkCcBdvFIta4o2Bo4xZSOugvnHtnE="
+          }
+        },
+        "HttpApi": {
+          "Type": "AWS::ApiGatewayV2::Api",
+          "Properties": {
+            "Name": "dev-individuell-examination-shui",
+            "ProtocolType": "HTTP",
+            "CorsConfiguration": {
+              "AllowHeaders": [
+                "Content-Type"
+              ],
+              "AllowMethods": [
+                "OPTIONS",
+                "GET",
+                "POST",
+                "PUT"
+              ],
+              "AllowOrigins": [
+                "http://localhost:5173",
+                "http://individuell-examination-shui.s3-website.eu-north-1.amazonaws.com"
+              ]
+            }
+          }
+        },
+        "HttpApiStage": {
+          "Type": "AWS::ApiGatewayV2::Stage",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "StageName": "$default",
+            "AutoDeploy": true,
+            "DefaultRouteSettings": {
+              "DetailedMetricsEnabled": false
+            }
+          }
+        },
+        "CreateMessageLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "CreateMessageLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationCreateMessage": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "CreateMessageLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostMessages": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /messages",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationCreateMessage"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationCreateMessage"
+        },
+        "GetMessagesLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "GetMessagesLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationGetMessages": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "GetMessagesLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRouteGetMessages": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "GET /messages",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationGetMessages"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationGetMessages"
+        },
+        "UpdateMessageLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "UpdateMessageLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationUpdateMessage": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "UpdateMessageLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePutMessagesIdVar": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "PUT /messages/{id}",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationUpdateMessage"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationUpdateMessage"
+        },
+        "GetMessagesByUserLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "GetMessagesByUserLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationGetMessagesByUser": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "GetMessagesByUserLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRouteGetMessagesUsernameVar": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "GET /messages/{username}",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationGetMessagesByUser"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationGetMessagesByUser"
+        },
+        "MessagesTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "messages",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "id",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "BillingMode": "PAY_PER_REQUEST"
+          }
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-eu-north-1-280070e0-8c1a",
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-ServerlessDeploymentBucketName"
+          }
+        },
+        "CreateMessageLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "CreateMessageLambdaVersion54Ktwv6TYXJmuPHaGGTRF9lcz2K6ysatWkdOw8So"
+          },
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-CreateMessageLambdaFunctionQualifiedArn"
+          }
+        },
+        "GetMessagesLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "GetMessagesLambdaVersionjakt0YHXhU4AGufIkppykTQLvpSRPk60vBiZwM5tc"
+          },
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-GetMessagesLambdaFunctionQualifiedArn"
+          }
+        },
+        "UpdateMessageLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "UpdateMessageLambdaVersionqcZJJRCOKL86ZMEY9dXnNNUwqNytwvUnmEWikevL8M"
+          },
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-UpdateMessageLambdaFunctionQualifiedArn"
+          }
+        },
+        "GetMessagesByUserLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "GetMessagesByUserLambdaVersion39cCHgHKmSc6GgbP5yjGQhJcoi63i7BC3rglXTLm4I"
+          },
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-GetMessagesByUserLambdaFunctionQualifiedArn"
+          }
+        },
+        "HttpApiId": {
+          "Description": "Id of the HTTP API",
+          "Value": {
+            "Ref": "HttpApi"
+          },
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-HttpApiId"
+          }
+        },
+        "HttpApiUrl": {
+          "Description": "URL of the HTTP API",
+          "Value": {
+            "Fn::Join": [
+              "",
+              [
+                "https://",
+                {
+                  "Ref": "HttpApi"
+                },
+                ".execute-api.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix"
+                }
+              ]
+            ]
+          },
+          "Export": {
+            "Name": "sls-individuell-examination-shui-dev-HttpApiUrl"
+          }
+        }
+      }
+    }
+  }
+}
